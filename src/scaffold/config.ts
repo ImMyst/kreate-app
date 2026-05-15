@@ -241,7 +241,7 @@ const tplDomainPackageJson = `{
     "test:watch": "vitest"
   },
   "dependencies": {
-    "effect": "4.0.0-beta.66"
+    "effect": "^4.0.0-beta.66"
   },
   "devDependencies": {
     "@effect/vitest": "4.0.0-beta.66",
