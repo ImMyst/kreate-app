@@ -14,6 +14,7 @@
     "format:check": "oxfmt . --check",
     "build": "tsc",
     "dev": "bun run src/main.ts",
+    "link:global": "bun run build && bun link",
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "husky"
