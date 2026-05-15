@@ -1,6 +1,9 @@
 import { Command, Prompt } from "effect/unstable/cli";
-import { Console, Effect, FileSystem, Path } from "effect";
 import { addRepo, availableRepos, isInGitRepo, NotInGitRepoError } from "./vendoring.js";
+import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Path from "effect/Path";
+import * as Console from "effect/Console";
 
 export const reposCommand = Command.make("repos", {}, () =>
   Effect.gen(function* () {
@@ -12,7 +15,7 @@ export const reposCommand = Command.make("repos", {}, () =>
 
     const inGit = yield* isInGitRepo(fs, path);
     if (!inGit) {
-      return yield* Effect.fail(new NotInGitRepoError());
+      return yield* new NotInGitRepoError();
     }
 
     const selected = yield* Prompt.multiSelect({

@@ -1,6 +1,6 @@
 import { Argument, Command, Flag, Prompt } from "effect/unstable/cli";
-import { Effect } from "effect";
 import { scaffold, type FrontendChoice } from "../scaffold/pipeline.js";
+import * as Effect from "effect/Effect";
 
 const frontendChoices: { title: string; value: FrontendChoice }[] = [
   { title: "none (backend-only)", value: "none" },

@@ -1,4 +1,6 @@
-import { Effect, FileSystem, Path } from "effect";
+import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Path from "effect/Path";
 
 export type FrontendChoice = "none" | "web" | "mobile";
 
@@ -32,7 +34,9 @@ const tplPackageJson = `{
     "format": "oxfmt . --write",
     "format:check": "oxfmt . --check",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "precommit": "effect-language-service patch && bun run typecheck && bun run lint && bun run format && bun run test",
+    "prepare": "bun run precommit"
   },
   "devDependencies": {
     "@effect/language-service": "catalog:",
@@ -68,7 +72,6 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
-.husky/_
 .repos/
 coverage/
 *.lcov
@@ -104,7 +107,39 @@ const tplTsconfigBase = `{
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "noEmit": true,
-    "plugins": [{ "name": "@effect/language-service" }]
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "namespaceImportPackages": ["@effect/platform-node", "effect"],
+        "diagnosticSeverity": {
+          "importFromBarrel": "error",
+          "anyUnknownInErrorContext": "error",
+          "unsafeEffectTypeAssertion": "error",
+          "instanceOfSchema": "error",
+          "deterministicKeys": "error",
+          "strictEffectProvide": "off",
+          "missingEffectServiceDependency": "error",
+          "leakingRequirements": "error",
+          "globalErrorInEffectCatch": "error",
+          "globalErrorInEffectFailure": "error",
+          "unknownInEffectCatch": "error",
+          "strictBooleanExpressions": "off",
+          "preferSchemaOverJson": "error",
+          "schemaSyncInEffect": "error",
+          "cryptoRandomUUID": "error",
+          "cryptoRandomUUIDInEffect": "error",
+          "nodeBuiltinImport": "error",
+          "globalDate": "error",
+          "globalDateInEffect": "error",
+          "globalConsole": "error",
+          "globalConsoleInEffect": "error",
+          "globalRandom": "error",
+          "globalRandomInEffect": "error",
+          "globalTimers": "error",
+          "globalTimersInEffect": "error"
+        }
+      }
+    ]
   }
 }
 `;
@@ -161,6 +196,9 @@ const tplVscodeSettings = `{
   "oxc.fmt.configPath": ".oxfmtrc.json",
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
+
+  "js/ts.tsdk.path": "./node_modules/typescript/lib",
+  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
 
   "js/ts.preferences.autoImportFileExcludePatterns": [".repos/**"],
 
@@ -231,9 +269,6 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run test
 `;
-
-const tplPreCommitHook = `bun run format && bun run lint && bun run typecheck && bun run test
-git update-index --again`;
 
 const tplDomainPackageJson = `{
   "name": "{{scopeName}}/domain",
@@ -372,10 +407,6 @@ export function writeRootConfig(
 
     yield* fs.makeDirectory(join(".github", "workflows"), { recursive: true });
     yield* fs.writeFileString(join(".github", "workflows", "ci.yml"), tplCiWorkflow);
-
-    yield* fs.makeDirectory(join(".husky"), { recursive: true });
-    yield* fs.writeFileString(join(".husky", "pre-commit"), tplPreCommitHook);
-    yield* fs.chmod(join(".husky", "pre-commit"), 0o755);
   });
 }
 

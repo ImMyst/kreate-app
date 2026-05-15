@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Effect } from "effect";
 import { validateProjectName } from "./validation.js";
 import { InvalidNameError } from "./errors.js";
+import * as Effect from "effect/Effect";
 
 describe("validateProjectName", () => {
   it.effect("accepts a valid lowercase name", () =>

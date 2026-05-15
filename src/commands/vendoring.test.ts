@@ -1,7 +1,10 @@
 import { describe, expect, it, layer } from "@effect/vitest";
-import { Effect, FileSystem, Layer, Path } from "effect";
 import { ProcessRunnerTag, make as makeProcessRunner } from "../scaffold/process-runner.js";
 import { isInGitRepo, addRepo, availableRepos, NotInGitRepoError } from "./vendoring.js";
+import * as Effect from "effect/Effect";
+import * as FileSystem from "effect/FileSystem";
+import * as Layer from "effect/Layer";
+import * as Path from "effect/Path";
 
 describe("availableRepos", () => {
   it("has at least one repo", () => {

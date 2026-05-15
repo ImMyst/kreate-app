@@ -1,4 +1,4 @@
-import { Data } from "effect";
+import * as Data from "effect/Data";
 
 export class InvalidNameError extends Data.TaggedError("InvalidNameError")<{
   readonly name: string;
@@ -7,4 +7,9 @@ export class InvalidNameError extends Data.TaggedError("InvalidNameError")<{
 
 export class DirectoryNotEmptyError extends Data.TaggedError("DirectoryNotEmptyError")<{
   readonly path: string;
+}> {}
+
+export class CommandError extends Data.TaggedError("CommandError")<{
+  readonly command: string;
+  readonly message: string;
 }> {}

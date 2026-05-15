@@ -33,9 +33,6 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-# Husky internal
-.husky/_
-
 # Repos
 .repos/
 

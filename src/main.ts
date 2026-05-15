@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 import { Command } from "effect/unstable/cli";
-import { Effect } from "effect";
 import { BunServices } from "@effect/platform-bun";
 import { newCommand } from "./commands/new.js";
 import { reposCommand } from "./commands/repos.js";
 import { ProcessRunnerLive } from "./scaffold/process-runner-live.js";
+import * as Effect from "effect/Effect";
 
 const root = Command.make("kreate-app").pipe(
   Command.withSubcommands([newCommand, reposCommand]),
