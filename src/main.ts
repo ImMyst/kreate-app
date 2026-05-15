@@ -3,6 +3,7 @@ import { Effect } from "effect";
 import { BunServices } from "@effect/platform-bun";
 import { newCommand } from "./commands/new.js";
 import { reposCommand } from "./commands/repos.js";
+import { ProcessRunnerLive } from "./scaffold/process-runner-live.js";
 
 const root = Command.make("kreate-app").pipe(
   Command.withSubcommands([newCommand, reposCommand]),
@@ -11,6 +12,6 @@ const root = Command.make("kreate-app").pipe(
 
 const program = Command.run(root, {
   version: "0.1.0"
-}).pipe(Effect.provide(BunServices.layer));
+}).pipe(Effect.provide([BunServices.layer, ProcessRunnerLive]));
 
 Effect.runFork(program);
