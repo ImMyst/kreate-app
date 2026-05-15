@@ -1,6 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import { Effect } from "effect";
 import { validateProjectName } from "./validation.js";
+import { InvalidNameError } from "./errors.js";
 
 describe("validateProjectName", () => {
   it.effect("accepts a valid lowercase name", () =>
@@ -40,15 +41,17 @@ describe("validateProjectName", () => {
 
   it.effect("fails on name starting with hyphen", () =>
     Effect.gen(function* () {
-      const result = yield* validateProjectName("-myapp").pipe(Effect.flip);
-      expect(result.message).toContain("Invalid project name");
+      const error = yield* validateProjectName("-myapp").pipe(Effect.flip);
+      expect(error).toBeInstanceOf(InvalidNameError);
+      expect(error._tag).toBe("InvalidNameError");
     })
   );
 
   it.effect("fails on name ending with hyphen", () =>
     Effect.gen(function* () {
-      const result = yield* validateProjectName("myapp-").pipe(Effect.flip);
-      expect(result.message).toContain("Invalid project name");
+      const error = yield* validateProjectName("myapp-").pipe(Effect.flip);
+      expect(error).toBeInstanceOf(InvalidNameError);
+      expect(error._tag).toBe("InvalidNameError");
     })
   );
 

@@ -1,8 +1,9 @@
 import { Effect, Result } from "effect";
+import { InvalidNameError } from "./errors.js";
 
 const npmNameRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 
-export function validateProjectName(raw: string): Effect.Effect<string, Error> {
+export function validateProjectName(raw: string): Effect.Effect<string, InvalidNameError> {
   if (raw === ".") {
     return Effect.sync(() => {
       const cwd = process.cwd();
@@ -10,9 +11,10 @@ export function validateProjectName(raw: string): Effect.Effect<string, Error> {
       const normalized = basename.toLowerCase().replace(/\s+/g, "-");
       if (!npmNameRegex.test(normalized)) {
         return Result.fail(
-          new Error(
-            `Invalid project name "${normalized}". Must be lowercase, no spaces, hyphens allowed.`
-          )
+          new InvalidNameError({
+            name: normalized,
+            reason: "Must be lowercase, no spaces, hyphens allowed."
+          })
         );
       }
       return Result.succeed(normalized);
@@ -26,9 +28,10 @@ export function validateProjectName(raw: string): Effect.Effect<string, Error> {
   const normalized = raw.toLowerCase().replace(/\s+/g, "-");
   if (!npmNameRegex.test(normalized)) {
     return Effect.fail(
-      new Error(
-        `Invalid project name "${normalized}". Must be lowercase, no spaces, hyphens allowed.`
-      )
+      new InvalidNameError({
+        name: normalized,
+        reason: "Must be lowercase, no spaces, hyphens allowed."
+      })
     );
   }
   return Effect.succeed(normalized);
