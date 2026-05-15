@@ -48,9 +48,7 @@ export function scaffold(
     const scopeName = `@${projectName}`;
 
     const targetDir =
-      options.targetDir === "."
-        ? path.resolve(process.cwd())
-        : path.resolve(options.targetDir);
+      options.targetDir === "." ? path.resolve(process.cwd()) : path.resolve(options.targetDir);
 
     yield* Console.log(`  Project: ${projectName}`);
     yield* Console.log(`  Scope: ${scopeName}`);
