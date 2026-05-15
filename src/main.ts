@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { Command } from "effect/unstable/cli";
 import { Effect } from "effect";
 import { BunServices } from "@effect/platform-bun";

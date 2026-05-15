@@ -17,7 +17,7 @@ export const reposCommand = Command.make("repos", {}, () =>
 
     const selected = yield* Prompt.multiSelect({
       message: "Select repositories to add:",
-      choices: availableRepos.map((r) => ({ title: r.name, value: r }))
+      choices: availableRepos.map((repo) => ({ title: repo.name, value: repo }))
     });
 
     if (selected.length === 0) {

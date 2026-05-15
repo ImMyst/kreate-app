@@ -151,17 +151,22 @@ export default defineConfig({
 `;
 
 const tplVscodeSettings = `{
-  "search.exclude": {
-    "**/.repos/**": true
+  "oxc.fmt.configPath": ".oxfmtrc.json",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+
+  "js/ts.preferences.autoImportFileExcludePatterns": [".repos/**"],
+
+  "files.exclude": {
+    ".repos/**": true
   },
+
   "files.watcherExclude": {
-    "**/.repos/**": true
+    ".repos/**": true
   },
-  "explorer.exclude": {
-    "**/.repos/**": true
-  },
-  "editor.defaultFormatter": "oxc.oxfmt-vscode",
-  "editor.formatOnSave": true
+
+  "search.exclude": {
+    ".repos/**": true
 }
 `;
 
