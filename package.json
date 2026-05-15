@@ -2,6 +2,10 @@
   "name": "kreate-app",
   "version": "0.1.0",
   "private": true,
+  "bin": {
+    "create-kreate-app": "./dist/main.js",
+    "kreate-app": "./dist/main.js"
+  },
   "workspaces": {
     "catalog": {
       "effect": "^4.0.0-beta.66",
@@ -9,10 +13,6 @@
       "@effect/vitest": "4.0.0-beta.66",
       "@effect/language-service": "^0.86.1"
     }
-  },
-  "bin": {
-    "create-kreate-app": "./dist/main.js",
-    "kreate-app": "./dist/main.js"
   },
   "type": "module",
   "scripts": {
