@@ -167,6 +167,7 @@ const tplVscodeSettings = `{
 
   "search.exclude": {
     ".repos/**": true
+  }
 }
 `;
 
