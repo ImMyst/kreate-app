@@ -49,7 +49,7 @@ export function scaffold(
 
     const targetDir =
       options.targetDir === "."
-        ? path.join(process.cwd(), projectName)
+        ? path.resolve(process.cwd())
         : path.resolve(options.targetDir);
 
     yield* Console.log(`  Project: ${projectName}`);
@@ -107,6 +107,10 @@ export function scaffold(
     yield* Console.log("  OK");
     yield* Console.log("");
 
-    yield* Console.log(`Done! cd ${projectName} && bun dev`);
+    if (options.targetDir === ".") {
+      yield* Console.log(`Done! Project scaffolded in current directory`);
+    } else {
+      yield* Console.log(`Done! cd ${projectName} && bun dev`);
+    }
   });
 }
