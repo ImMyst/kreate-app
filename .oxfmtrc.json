@@ -1,0 +1,17 @@
+{
+  "trailingComma": "none",
+  "javascript": {
+    "semi": true,
+    "singleQuote": false
+  },
+  "typescript": {
+    "semi": true,
+    "singleQuote": false
+  },
+  "json": {
+    "tabSize": 2
+  },
+  "yaml": {
+    "tabSize": 2
+  }
+}
