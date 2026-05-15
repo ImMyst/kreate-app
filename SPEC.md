@@ -4,15 +4,15 @@ CLI de scaffolding de projets prêts à développer. Usage personnel (V1).
 
 ## Stack du projet cible
 
-| Couche | Technologie |
-|---|---|
-| Package manager | bun |
-| Monorepo | bun workspaces + turbo |
-| Langage | TypeScript ~6.x |
-| Linter | oxlint |
-| Formateur | oxfmt |
-| Runtime effect | Effect 4 |
-| Tests | vitest + @effect/vitest |
+| Couche          | Technologie             |
+| --------------- | ----------------------- |
+| Package manager | bun                     |
+| Monorepo        | bun workspaces + turbo  |
+| Langage         | TypeScript ~6.x         |
+| Linter          | oxlint                  |
+| Formateur       | oxfmt                   |
+| Runtime effect  | Effect 4                |
+| Tests           | vitest + @effect/vitest |
 
 ## CLI (kreate-app lui-même)
 

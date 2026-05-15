@@ -6,14 +6,14 @@ Scaffolding CLI pour projets TypeScript modernes, prêts à développer.
 
 ## Stack générée
 
-| Couche | Technologie |
-|---|---|
-| Runtime | Effect 4 |
-| Langage | TypeScript 6 |
-| Linter | oxlint |
-| Formateur | oxfmt |
-| Tests | vitest + @effect/vitest |
-| Monorepo | bun workspaces + turbo |
+| Couche          | Technologie                                  |
+| --------------- | -------------------------------------------- |
+| Runtime         | Effect 4                                     |
+| Langage         | TypeScript 6                                 |
+| Linter          | oxlint                                       |
+| Formateur       | oxfmt                                        |
+| Tests           | vitest + @effect/vitest                      |
+| Monorepo        | bun workspaces + turbo                       |
 | Frontend (opt.) | Tanstack Start + Tailwind, ou Expo + Tamagui |
 
 ## Usage
@@ -23,6 +23,7 @@ bunx kreate-app new mon-projet
 ```
 
 Le CLI demande :
+
 - Template de frontend (web / mobile / aucun)
 - Puis scaffold, git init, git subtree, bun install, premier commit
 
@@ -70,7 +71,7 @@ kreate-app/
 git clone <repo>
 bun install
 bun dev              # mode dev du CLI
-bun test             # tests
+bun run test         # tests
 bun lint             # oxlint
 bun format           # oxfmt
 bun typecheck        # tsc

@@ -39,6 +39,7 @@ Chaque package et chaque app dans le projet cible contient son code dans `src/`.
 ## Templates de frontend
 
 Les templates sont embarqués dans le CLI (fichiers statiques copiés). Noms d'apps fixes :
+
 - `web` → Tanstack Start + Tailwind
 - `mobile` → Expo + Tamagui
 
