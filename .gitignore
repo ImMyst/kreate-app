@@ -9,9 +9,6 @@ bun.lockb
 dist/
 build/
 
-# Turbo
-.turbo/**
-
 # TypeScript
 *.tsbuildinfo
 tsconfig.tsbuildinfo
