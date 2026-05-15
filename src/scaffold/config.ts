@@ -310,34 +310,34 @@ export default defineConfig({
 });
 `;
 
-const tplDomainService = `import { Effect, Context } from "effect";
+const tplDomainService = `import * as Context from "effect/Context";
+import * as Effect from "effect/Effect";
 
 export interface User {
   readonly id: string;
   readonly name: string;
 }
 
-export class UserService extends Context.Service<UserService, {
-  readonly findById: (id: string) => Effect.Effect<User | null>;
-}>()("@domain/UserService") {}
+export class UserService extends Context.Service<
+  UserService,
+  {
+    readonly findById: (id: string) => Effect.Effect<User | null>;
+  }
+>()("@ouioui/domain/UserService") {}
 `;
 
 const tplDomainIndex = `export * from "./UserService.js";
 `;
 
 const tplDomainTest = `import { describe, expect, layer } from "@effect/vitest";
-import { Effect, Layer } from "effect";
 import { UserService } from "./UserService.js";
+import * as Layer from "effect/Layer";
+import * as Effect from "effect/Effect";
 
-const TestUserService = Layer.succeed(
-  UserService,
-  {
-    findById: (id) =>
-      id === "1"
-        ? Effect.succeed({ id: "1", name: "Alice" })
-        : Effect.succeed(null),
-  }
-);
+const TestUserService = Layer.succeed(UserService, {
+  findById: (id) =>
+    id === "1" ? Effect.succeed({ id: "1", name: "Alice" }) : Effect.succeed(null),
+});
 
 describe("UserService", () => {
   layer(TestUserService)((it) => {
@@ -347,14 +347,16 @@ describe("UserService", () => {
         const user = yield* service.findById("1");
         expect(user).not.toBeNull();
         expect(user!.name).toBe("Alice");
-      }));
+      }),
+    );
 
     it.effect("returns null for unknown user", () =>
       Effect.gen(function* () {
         const service = yield* UserService;
         const user = yield* service.findById("999");
         expect(user).toBeNull();
-      }));
+      }),
+    );
   });
 });
 `;
