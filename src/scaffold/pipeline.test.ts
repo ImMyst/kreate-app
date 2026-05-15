@@ -85,5 +85,27 @@ describe("scaffold process calls", () => {
         expect(cmds).toContain("git commit -m Initial scaffold");
       })
     );
+
+    it.effect("uses current directory when targetDir is '.'", () =>
+      Effect.gen(function* () {
+        const calls: Array<{ cmd: string; args: ReadonlyArray<string>; cwd?: string }> = [];
+        const mockRunner = makeProcessRunner(
+          (cmd: string, args: ReadonlyArray<string>, options?: { cwd?: string }) =>
+            Effect.sync(() => {
+              calls.push({ cmd, args, cwd: options?.cwd });
+            })
+        );
+
+        const { scaffold } = yield* Effect.promise(() => import("./pipeline.js"));
+        yield* scaffold({
+          rawName: ".",
+          targetDir: ".",
+          frontend: "none"
+        }).pipe(Effect.provideService(ProcessRunnerTag, mockRunner));
+
+        const cwd = calls[0]?.cwd;
+        expect(cwd).toBe(process.cwd());
+      })
+    );
   });
 });
