@@ -46,14 +46,14 @@ ios/
 android/
 `;
 
-function getGitignore(frontend: FrontendChoice): string {
+export function getGitignore(frontend: FrontendChoice): string {
   let content = baseGitignore;
   if (frontend === "web") content += webGitignoreAdditions;
   if (frontend === "mobile") content += mobileGitignoreAdditions;
   return content;
 }
 
-function getPackageJson(projectName: string, scopeName: string, frontend: FrontendChoice) {
+export function getPackageJson(projectName: string, scopeName: string, frontend: FrontendChoice) {
   const workspaces = ["packages/*"];
   if (frontend !== "none") workspaces.push("apps/*");
 
@@ -93,7 +93,7 @@ function getPackageJson(projectName: string, scopeName: string, frontend: Fronte
   );
 }
 
-function getTsconfigBase() {
+export function getTsconfigBase() {
   return (
     JSON.stringify(
       {
@@ -117,7 +117,7 @@ function getTsconfigBase() {
   );
 }
 
-function getDomainTsconfig() {
+export function getDomainTsconfig() {
   return (
     JSON.stringify(
       {
@@ -134,7 +134,7 @@ function getDomainTsconfig() {
   );
 }
 
-function getTurboConfig() {
+export function getTurboConfig() {
   return (
     JSON.stringify(
       {
@@ -162,7 +162,7 @@ function getTurboConfig() {
   );
 }
 
-function getOxlintConfig() {
+export function getOxlintConfig() {
   return (
     JSON.stringify(
       {
@@ -180,7 +180,7 @@ function getOxlintConfig() {
   );
 }
 
-function getOxfmtConfig() {
+export function getOxfmtConfig() {
   return (
     JSON.stringify(
       {
@@ -195,7 +195,7 @@ function getOxfmtConfig() {
   );
 }
 
-function getVitestConfig() {
+export function getVitestConfig() {
   return `import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -206,7 +206,7 @@ export default defineConfig({
 `;
 }
 
-function getVscodeSettings() {
+export function getVscodeSettings() {
   return (
     JSON.stringify(
       {
@@ -228,7 +228,7 @@ function getVscodeSettings() {
   );
 }
 
-function getDomainPackageJson(scopeName: string) {
+export function getDomainPackageJson(scopeName: string) {
   return (
     JSON.stringify(
       {
@@ -256,7 +256,7 @@ function getDomainPackageJson(scopeName: string) {
   );
 }
 
-function getDomainService() {
+export function getDomainService() {
   return `import { Effect, Context } from "effect";
 
 export interface User {
@@ -270,12 +270,12 @@ export class UserService extends Context.Service<UserService, {
 `;
 }
 
-function getDomainIndex() {
+export function getDomainIndex() {
   return `export * from "./UserService.js";
 `;
 }
 
-function getDomainTest() {
+export function getDomainTest() {
   return `import { describe, expect, layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { UserService } from "./UserService.js";
@@ -311,7 +311,7 @@ describe("UserService", () => {
 `;
 }
 
-function getDomainVitestConfig() {
+export function getDomainVitestConfig() {
   return `import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -322,7 +322,7 @@ export default defineConfig({
 `;
 }
 
-function getCiWorkflow() {
+export function getCiWorkflow() {
   return `name: CI
 
 on:
@@ -345,7 +345,7 @@ jobs:
 `;
 }
 
-function getPreCommitHook() {
+export function getPreCommitHook() {
   return `#!/bin/sh
 bun lint && bun format:check
 `;
