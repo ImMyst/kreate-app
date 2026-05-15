@@ -14,10 +14,17 @@ const tplPackageJson = `{
   "name": "{{projectName}}",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*"{{#hasApps}},
-    "apps/*"{{/hasApps}}
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"{{#hasApps}},
+      "apps/*"{{/hasApps}}
+    ],
+    "catalog": {
+      "effect": "^4.0.0-beta.66",
+      "@effect/vitest": "4.0.0-beta.66",
+      "@effect/language-service": "^0.86.1"
+    }
+  },
   "scripts": {
     "dev": "turbo dev",
     "typecheck": "turbo typecheck",
@@ -28,8 +35,8 @@ const tplPackageJson = `{
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@effect/language-service": "^0.86.1",
-    "@effect/vitest": "4.0.0-beta.66",
+    "@effect/language-service": "catalog:",
+    "@effect/vitest": "catalog:",
     "@types/bun": "latest",
     "oxfmt": "latest",
     "oxlint": "latest",
@@ -241,10 +248,10 @@ const tplDomainPackageJson = `{
     "test:watch": "vitest"
   },
   "dependencies": {
-    "effect": "^4.0.0-beta.66"
+    "effect": "catalog:"
   },
   "devDependencies": {
-    "@effect/vitest": "4.0.0-beta.66",
+    "@effect/vitest": "catalog:",
     "vitest": "latest"
   }
 }

@@ -41,22 +41,24 @@ describe("processPackageJson", () => {
   it("includes only packages/* workspace for none", () => {
     const result = processPackageJson(sampleConfig);
     const parsed = JSON.parse(result);
-    expect(parsed.workspaces).toEqual(["packages/*"]);
+    expect(parsed.workspaces.packages).toEqual(["packages/*"]);
+    expect(parsed.workspaces.catalog).toBeDefined();
+    expect(parsed.workspaces.catalog.effect).toBe("^4.0.0-beta.66");
   });
 
   it("includes apps/* workspace for web", () => {
     const config = { ...sampleConfig, frontend: "web" as const };
     const result = processPackageJson(config);
     const parsed = JSON.parse(result);
-    expect(parsed.workspaces).toContain("apps/*");
-    expect(parsed.workspaces).toContain("packages/*");
+    expect(parsed.workspaces.packages).toContain("apps/*");
+    expect(parsed.workspaces.packages).toContain("packages/*");
   });
 
   it("includes apps/* workspace for mobile", () => {
     const config = { ...sampleConfig, frontend: "mobile" as const };
     const result = processPackageJson(config);
     const parsed = JSON.parse(result);
-    expect(parsed.workspaces).toContain("apps/*");
+    expect(parsed.workspaces.packages).toContain("apps/*");
   });
 
   it("has correct scripts", () => {
