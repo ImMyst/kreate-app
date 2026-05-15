@@ -1,6 +1,4 @@
-import * as Effect from "effect/Effect";
-import * as FileSystem from "effect/FileSystem";
-import * as Path from "effect/Path";
+import { Effect, FileSystem, Path } from "effect";
 
 export type FrontendChoice = "none" | "web" | "mobile";
 
@@ -316,8 +314,7 @@ export default defineConfig({
 });
 `;
 
-const tplDomainService = `import * as Context from "effect/Context";
-import * as Effect from "effect/Effect";
+const tplDomainService = `import { Context, Effect } from "effect";
 
 export interface User {
   readonly id: string;
@@ -337,8 +334,7 @@ const tplDomainIndex = `export * from "./UserService.js";
 
 const tplDomainTest = `import { describe, expect, layer } from "@effect/vitest";
 import { UserService } from "./UserService.js";
-import * as Layer from "effect/Layer";
-import * as Effect from "effect/Effect";
+import { Effect, Layer } from "effect";
 
 const TestUserService = Layer.succeed(UserService, {
   findById: (id) =>

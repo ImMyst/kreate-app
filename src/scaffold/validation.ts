@@ -1,4 +1,4 @@
-import * as Effect from "effect/Effect";
+import { Effect } from "effect";
 import { InvalidNameError } from "./errors.js";
 
 const npmNameRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;

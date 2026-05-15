@@ -1,11 +1,7 @@
 import { describe, expect, layer } from "@effect/vitest";
 import { ProcessRunnerTag, make as makeProcessRunner } from "./process-runner.js";
 import { validateDirectory } from "./pipeline.js";
-import * as PlatformError from "effect/PlatformError";
-import * as Effect from "effect/Effect";
-import * as Layer from "effect/Layer";
-import * as FileSystem from "effect/FileSystem";
-import * as Path from "effect/Path";
+import { Effect, FileSystem, Layer, Path, PlatformError } from "effect";
 
 const TestFsLayer = FileSystem.layerNoop({
   exists: (path) => Effect.succeed(path === "/existing-empty" || path === "/existing-full"),
@@ -22,10 +18,6 @@ const TestFsLayer = FileSystem.layerNoop({
     );
   }
 });
-
-const _TestProcessRunnerLayer = Layer.succeed(ProcessRunnerTag)(
-  makeProcessRunner(() => Effect.void)
-);
 
 describe("validateDirectory", () => {
   layer(Layer.mergeAll(TestFsLayer, Path.layer))((it) => {

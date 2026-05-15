@@ -1,7 +1,6 @@
-import * as Effect from "effect/Effect";
 import { ProcessRunnerTag, make } from "./process-runner.js";
-import * as Layer from "effect/Layer";
 import { CommandError } from "./errors.js";
+import { Effect, Layer } from "effect";
 
 function spawn(
   cmd: string,

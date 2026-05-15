@@ -2,10 +2,7 @@ import { validateProjectName } from "./validation.js";
 import { writeRootConfig, writeDomainPackage, type FrontendChoice } from "./config.js";
 import { DirectoryNotEmptyError, InvalidNameError } from "./errors.js";
 import { run as runProcess, ProcessRunner } from "./process-runner.js";
-import * as FileSystem from "effect/FileSystem";
-import * as Effect from "effect/Effect";
-import * as Console from "effect/Console";
-import * as Path from "effect/Path";
+import { Console, Effect, FileSystem, Path } from "effect";
 
 export { type FrontendChoice };
 

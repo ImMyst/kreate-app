@@ -1,9 +1,6 @@
 import { Command, Prompt } from "effect/unstable/cli";
 import { addRepo, availableRepos, isInGitRepo, NotInGitRepoError } from "./vendoring.js";
-import * as Effect from "effect/Effect";
-import * as FileSystem from "effect/FileSystem";
-import * as Path from "effect/Path";
-import * as Console from "effect/Console";
+import { Console, Effect, FileSystem, Path } from "effect";
 
 export const reposCommand = Command.make("repos", {}, () =>
   Effect.gen(function* () {

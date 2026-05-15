@@ -18,5 +18,6 @@
 
   "search.exclude": {
     ".repos/**": true
-  }
+  },
+  "typescript.native-preview.tsdk": "/Users/titouangalvani/Documents/Perso/Projets/kreate-app/node_modules/@typescript/native-preview"
 }

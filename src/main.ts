@@ -4,7 +4,7 @@ import { BunServices } from "@effect/platform-bun";
 import { newCommand } from "./commands/new.js";
 import { reposCommand } from "./commands/repos.js";
 import { ProcessRunnerLive } from "./scaffold/process-runner-live.js";
-import * as Effect from "effect/Effect";
+import { Effect } from "effect";
 
 const root = Command.make("kreate-app").pipe(
   Command.withSubcommands([newCommand, reposCommand]),

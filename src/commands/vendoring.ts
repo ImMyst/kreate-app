@@ -1,9 +1,5 @@
-import * as Data from "effect/Data";
+import { Console, Data, Effect, FileSystem, Path } from "effect";
 import { ProcessRunner, run as runProcess } from "../scaffold/process-runner.js";
-import * as FileSystem from "effect/FileSystem";
-import * as Path from "effect/Path";
-import * as Effect from "effect/Effect";
-import * as Console from "effect/Console";
 
 export interface RepoDefinition {
   readonly name: string;
