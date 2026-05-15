@@ -2,7 +2,46 @@ import { Effect, FileSystem, Path } from "effect";
 
 export type FrontendChoice = "none" | "web" | "mobile";
 
-const baseGitignore = `node_modules/
+export interface ScaffoldConfig {
+  readonly projectName: string;
+  readonly scopeName: string;
+  readonly frontend: FrontendChoice;
+}
+
+// ── Templates ──────────────────────────────────────────────
+
+const tplPackageJson = `{
+  "name": "{{projectName}}",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"{{#hasApps}},
+    "apps/*"{{/hasApps}}
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "format": "oxfmt . --write",
+    "format:check": "oxfmt . --check",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@effect/language-service": "^0.86.1",
+    "@effect/vitest": "4.0.0-beta.66",
+    "@types/bun": "latest",
+    "oxfmt": "^0.49.0",
+    "oxlint": "latest",
+    "turbo": "latest",
+    "typescript": "^6.0.3",
+    "vitest": "latest"
+  },
+  "packageManager": "bun@1.3.14"
+}
+`;
+
+const tplGitignoreBase = `node_modules/
 .npm
 bun.lockb
 dist/
@@ -30,7 +69,7 @@ tmp/
 temp/
 `;
 
-const webGitignoreAdditions = `.vinxi/
+const tplGitignoreWeb = `.vinxi/
 .nitro/
 .tanstack/
 .output/
@@ -38,7 +77,7 @@ dist-ssr/
 *.local
 `;
 
-const mobileGitignoreAdditions = `.expo/
+const tplGitignoreMobile = `.expo/
 .expo-shared/
 dist/
 web-build/
@@ -46,157 +85,63 @@ ios/
 android/
 `;
 
-export function getGitignore(frontend: FrontendChoice): string {
-  let content = baseGitignore;
-  if (frontend === "web") content += webGitignoreAdditions;
-  if (frontend === "mobile") content += mobileGitignoreAdditions;
-  return content;
+const tplTsconfigBase = `{
+  "compilerOptions": {
+    "strict": true,
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noEmit": true,
+    "plugins": [{ "name": "@effect/language-service" }]
+  }
 }
+`;
 
-export function getPackageJson(projectName: string, scopeName: string, frontend: FrontendChoice) {
-  const workspaces = ["packages/*"];
-  if (frontend !== "none") workspaces.push("apps/*");
-
-  const scripts: Record<string, string> = {
-    dev: "turbo dev",
-    typecheck: "turbo typecheck",
-    lint: "turbo lint",
-    format: "oxfmt . --write",
-    "format:check": "oxfmt . --check",
-    test: "vitest run",
-    "test:watch": "vitest"
-  };
-
-  return (
-    JSON.stringify(
-      {
-        name: projectName,
-        private: true,
-        type: "module",
-        workspaces,
-        scripts,
-        devDependencies: {
-          "@effect/language-service": "^0.86.1",
-          "@effect/vitest": "4.0.0-beta.66",
-          "@types/bun": "latest",
-          oxfmt: "^0.49.0",
-          oxlint: "latest",
-          turbo: "latest",
-          typescript: "^6.0.3",
-          vitest: "latest"
-        },
-        packageManager: "bun@1.3.14"
-      },
-      null,
-      2
-    ) + "\n"
-  );
+const tplTurboConfig = `{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "format": {},
+    "test": {
+      "dependsOn": ["^typecheck", "^lint"]
+    }
+  }
 }
+`;
 
-export function getTsconfigBase() {
-  return (
-    JSON.stringify(
-      {
-        compilerOptions: {
-          strict: true,
-          moduleResolution: "bundler",
-          module: "ESNext",
-          target: "ESNext",
-          skipLibCheck: true,
-          esModuleInterop: true,
-          verbatimModuleSyntax: true,
-          noUncheckedIndexedAccess: true,
-          exactOptionalPropertyTypes: true,
-          noEmit: true,
-          plugins: [{ name: "@effect/language-service" }]
-        }
-      },
-      null,
-      2
-    ) + "\n"
-  );
+const tplOxlintConfig = `{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "import", "typescript"],
+  "rules": {
+    "no-var": "error",
+    "eqeqeq": "error"
+  }
 }
+`;
 
-export function getDomainTsconfig() {
-  return (
-    JSON.stringify(
-      {
-        extends: "../../tsconfig.base.json",
-        compilerOptions: {
-          outDir: "dist",
-          rootDir: "src"
-        },
-        include: ["src"]
-      },
-      null,
-      2
-    ) + "\n"
-  );
+const tplOxfmtConfig = `{
+  "indentWidth": 2,
+  "lineWidth": 120,
+  "singleQuote": false,
+  "trailingComma": "all"
 }
+`;
 
-export function getTurboConfig() {
-  return (
-    JSON.stringify(
-      {
-        $schema: "https://turbo.build/schema.json",
-        tasks: {
-          dev: {
-            cache: false,
-            persistent: true
-          },
-          typecheck: {
-            dependsOn: ["^typecheck"]
-          },
-          lint: {
-            dependsOn: ["^lint"]
-          },
-          format: {},
-          test: {
-            dependsOn: ["^typecheck", "^lint"]
-          }
-        }
-      },
-      null,
-      2
-    ) + "\n"
-  );
-}
-
-export function getOxlintConfig() {
-  return (
-    JSON.stringify(
-      {
-        $schema:
-          "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxlint/configuration_schema.json",
-        plugins: ["unicorn", "import", "typescript"],
-        rules: {
-          "no-var": "error",
-          eqeqeq: "error"
-        }
-      },
-      null,
-      2
-    ) + "\n"
-  );
-}
-
-export function getOxfmtConfig() {
-  return (
-    JSON.stringify(
-      {
-        indentWidth: 2,
-        lineWidth: 120,
-        singleQuote: false,
-        trailingComma: "all"
-      },
-      null,
-      2
-    ) + "\n"
-  );
-}
-
-export function getVitestConfig() {
-  return `import { defineConfig } from "vitest/config";
+const tplVitestConfig = `import { defineConfig } from "vitest/config";
 
 export default defineConfig({
   test: {
@@ -204,60 +149,88 @@ export default defineConfig({
   },
 });
 `;
-}
 
-export function getVscodeSettings() {
-  return (
-    JSON.stringify(
-      {
-        "search.exclude": {
-          "**/.repos/**": true
-        },
-        "files.watcherExclude": {
-          "**/.repos/**": true
-        },
-        "explorer.exclude": {
-          "**/.repos/**": true
-        },
-        "editor.defaultFormatter": "oxc.oxfmt-vscode",
-        "editor.formatOnSave": true
-      },
-      null,
-      2
-    ) + "\n"
-  );
+const tplVscodeSettings = `{
+  "search.exclude": {
+    "**/.repos/**": true
+  },
+  "files.watcherExclude": {
+    "**/.repos/**": true
+  },
+  "explorer.exclude": {
+    "**/.repos/**": true
+  },
+  "editor.defaultFormatter": "oxc.oxfmt-vscode",
+  "editor.formatOnSave": true
 }
+`;
 
-export function getDomainPackageJson(scopeName: string) {
-  return (
-    JSON.stringify(
-      {
-        name: `${scopeName}/domain`,
-        type: "module",
-        scripts: {
-          typecheck: "tsc --noEmit",
-          lint: "oxlint .",
-          format: "oxfmt . --write",
-          "format:check": "oxfmt . --check",
-          test: "vitest run",
-          "test:watch": "vitest"
-        },
-        dependencies: {
-          effect: "4.0.0-beta.66"
-        },
-        devDependencies: {
-          "@effect/vitest": "4.0.0-beta.66",
-          vitest: "latest"
-        }
-      },
-      null,
-      2
-    ) + "\n"
-  );
+const tplCiWorkflow = `name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run format:check
+      - run: bun run test
+`;
+
+const tplPreCommitHook = `#!/bin/sh
+bun lint && bun format:check
+`;
+
+const tplDomainPackageJson = `{
+  "name": "{{scopeName}}/domain",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint .",
+    "format": "oxfmt . --write",
+    "format:check": "oxfmt . --check",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "effect": "4.0.0-beta.66"
+  },
+  "devDependencies": {
+    "@effect/vitest": "4.0.0-beta.66",
+    "vitest": "latest"
+  }
 }
+`;
 
-export function getDomainService() {
-  return `import { Effect, Context } from "effect";
+const tplDomainTsconfig = `{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
+`;
+
+const tplDomainVitestConfig = `import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    include: ["src/**/*.test.ts"],
+  },
+});
+`;
+
+const tplDomainService = `import { Effect, Context } from "effect";
 
 export interface User {
   readonly id: string;
@@ -268,15 +241,11 @@ export class UserService extends Context.Service<UserService, {
   readonly findById: (id: string) => Effect.Effect<User | null>;
 }>()("@domain/UserService") {}
 `;
-}
 
-export function getDomainIndex() {
-  return `export * from "./UserService.js";
+const tplDomainIndex = `export * from "./UserService.js";
 `;
-}
 
-export function getDomainTest() {
-  return `import { describe, expect, layer } from "@effect/vitest";
+const tplDomainTest = `import { describe, expect, layer } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { UserService } from "./UserService.js";
 
@@ -309,53 +278,32 @@ describe("UserService", () => {
   });
 });
 `;
+
+// ── Token replacement ──────────────────────────────────────
+
+export function replaceTokens(content: string, config: ScaffoldConfig): string {
+  return content
+    .replaceAll("{{projectName}}", config.projectName)
+    .replaceAll("{{scopeName}}", config.scopeName);
 }
 
-export function getDomainVitestConfig() {
-  return `import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  test: {
-    include: ["src/**/*.test.ts"],
-  },
-});
-`;
+export function processPackageJson(config: ScaffoldConfig): string {
+  const hasApps = config.frontend !== "none";
+  const content = replaceTokens(tplPackageJson, config);
+  if (hasApps) {
+    return content.replace("{{#hasApps}},", ",").replace('"apps/*"{{/hasApps}}', '"apps/*"');
+  }
+  return content.replace("{{#hasApps}},\n", "").replace('"apps/*"{{/hasApps}}\n', "");
 }
 
-export function getCiWorkflow() {
-  return `name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun run typecheck
-      - run: bun run lint
-      - run: bun run format:check
-      - run: bun run test
-`;
+export function processGitignore(config: ScaffoldConfig): string {
+  let content = tplGitignoreBase;
+  if (config.frontend === "web") content += tplGitignoreWeb;
+  if (config.frontend === "mobile") content += tplGitignoreMobile;
+  return content;
 }
 
-export function getPreCommitHook() {
-  return `#!/bin/sh
-bun lint && bun format:check
-`;
-}
-
-export interface ScaffoldConfig {
-  readonly projectName: string;
-  readonly scopeName: string;
-  readonly frontend: FrontendChoice;
-}
+// ── Write functions ────────────────────────────────────────
 
 export function writeRootConfig(
   fs: FileSystem.FileSystem,
@@ -366,25 +314,22 @@ export function writeRootConfig(
   return Effect.gen(function* () {
     const join = (...parts: string[]) => path.resolve(targetDir, ...parts);
 
-    yield* fs.writeFileString(
-      join("package.json"),
-      getPackageJson(config.projectName, config.scopeName, config.frontend)
-    );
-    yield* fs.writeFileString(join("tsconfig.base.json"), getTsconfigBase());
-    yield* fs.writeFileString(join("turbo.json"), getTurboConfig());
-    yield* fs.writeFileString(join(".oxlintrc.json"), getOxlintConfig());
-    yield* fs.writeFileString(join(".oxfmtrc.json"), getOxfmtConfig());
-    yield* fs.writeFileString(join("vitest.config.ts"), getVitestConfig());
-    yield* fs.writeFileString(join(".gitignore"), getGitignore(config.frontend));
+    yield* fs.writeFileString(join("package.json"), processPackageJson(config));
+    yield* fs.writeFileString(join("tsconfig.base.json"), tplTsconfigBase);
+    yield* fs.writeFileString(join("turbo.json"), tplTurboConfig);
+    yield* fs.writeFileString(join(".oxlintrc.json"), tplOxlintConfig);
+    yield* fs.writeFileString(join(".oxfmtrc.json"), tplOxfmtConfig);
+    yield* fs.writeFileString(join("vitest.config.ts"), tplVitestConfig);
+    yield* fs.writeFileString(join(".gitignore"), processGitignore(config));
 
     yield* fs.makeDirectory(join(".vscode"), { recursive: true });
-    yield* fs.writeFileString(join(".vscode", "settings.json"), getVscodeSettings());
+    yield* fs.writeFileString(join(".vscode", "settings.json"), tplVscodeSettings);
 
     yield* fs.makeDirectory(join(".github", "workflows"), { recursive: true });
-    yield* fs.writeFileString(join(".github", "workflows", "ci.yml"), getCiWorkflow());
+    yield* fs.writeFileString(join(".github", "workflows", "ci.yml"), tplCiWorkflow);
 
     yield* fs.makeDirectory(join(".husky"), { recursive: true });
-    yield* fs.writeFileString(join(".husky", "pre-commit"), getPreCommitHook());
+    yield* fs.writeFileString(join(".husky", "pre-commit"), tplPreCommitHook);
     yield* fs.chmod(join(".husky", "pre-commit"), 0o755);
   });
 }
@@ -403,21 +348,21 @@ export function writeDomainPackage(
 
     yield* fs.writeFileString(
       join("packages", "domain", "package.json"),
-      getDomainPackageJson(config.scopeName)
+      replaceTokens(tplDomainPackageJson, config)
     );
-    yield* fs.writeFileString(join("packages", "domain", "tsconfig.json"), getDomainTsconfig());
+    yield* fs.writeFileString(join("packages", "domain", "tsconfig.json"), tplDomainTsconfig);
     yield* fs.writeFileString(
       join("packages", "domain", "vitest.config.ts"),
-      getDomainVitestConfig()
+      tplDomainVitestConfig
     );
     yield* fs.writeFileString(
       join("packages", "domain", "src", "UserService.ts"),
-      getDomainService()
+      tplDomainService
     );
-    yield* fs.writeFileString(join("packages", "domain", "src", "index.ts"), getDomainIndex());
+    yield* fs.writeFileString(join("packages", "domain", "src", "index.ts"), tplDomainIndex);
     yield* fs.writeFileString(
       join("packages", "domain", "src", "UserService.test.ts"),
-      getDomainTest()
+      tplDomainTest
     );
   });
 }
