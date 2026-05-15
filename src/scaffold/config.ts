@@ -24,7 +24,8 @@ const tplPackageJson = `{
     "catalog": {
       "effect": "^4.0.0-beta.66",
       "@effect/vitest": "4.0.0-beta.66",
-      "@effect/language-service": "^0.86.1"
+      "@effect/tsgo": "latest",
+      "@typescript/native-preview": "latest"
     }
   },
   "scripts": {
@@ -35,12 +36,13 @@ const tplPackageJson = `{
     "format:check": "oxfmt . --check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "precommit": "effect-language-service patch && bun run typecheck && bun run lint && bun run format && bun run test",
+    "precommit": "effect-tsgo patch && bun run typecheck && bun run lint && bun run format && bun run test",
     "prepare": "bun run precommit"
   },
   "devDependencies": {
-    "@effect/language-service": "catalog:",
+    "@effect/tsgo": "catalog:",
     "@effect/vitest": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "@types/bun": "latest",
     "oxfmt": "latest",
     "oxlint": "latest",
@@ -137,7 +139,11 @@ const tplTsconfigBase = `{
           "globalRandomInEffect": "error",
           "globalTimers": "error",
           "globalTimersInEffect": "error"
-        }
+        },
+        "includeSuggestionsInTsc": true,
+        "ignoreEffectSuggestionsInTscExitCode": true,
+        "ignoreEffectWarningsInTscExitCode": false,
+        "ignoreEffectErrorsInTscExitCode": false
       }
     ]
   }
@@ -197,8 +203,8 @@ const tplVscodeSettings = `{
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,
 
-  "js/ts.tsdk.path": "./node_modules/typescript/lib",
-  "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+  "js/ts.experimental.useTsgo": true,
+  "js/ts.tsserver.experimental.enableProjectDiagnostics": true,
 
   "js/ts.preferences.autoImportFileExcludePatterns": [".repos/**"],
 

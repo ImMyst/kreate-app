@@ -44,7 +44,11 @@
           "globalRandomInEffect": "error",
           "globalTimers": "error",
           "globalTimersInEffect": "error"
-        }
+        },
+        "includeSuggestionsInTsc": true,
+        "ignoreEffectSuggestionsInTscExitCode": true,
+        "ignoreEffectWarningsInTscExitCode": false,
+        "ignoreEffectErrorsInTscExitCode": false
       }
     ]
   },

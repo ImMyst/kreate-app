@@ -3,7 +3,11 @@ import { ProcessRunnerTag, make } from "./process-runner.js";
 import * as Layer from "effect/Layer";
 import { CommandError } from "./errors.js";
 
-function spawn(cmd: string, args: ReadonlyArray<string>, cwd?: string): Effect.Effect<void, CommandError> {
+function spawn(
+  cmd: string,
+  args: ReadonlyArray<string>,
+  cwd?: string
+): Effect.Effect<void, CommandError> {
   return Effect.tryPromise({
     try: async () => {
       const proc = Bun.spawn([cmd, ...args], { cwd: cwd ?? process.cwd() });
@@ -16,10 +20,11 @@ function spawn(cmd: string, args: ReadonlyArray<string>, cwd?: string): Effect.E
         });
       }
     },
-    catch: (e) => new CommandError({
-      command: `${cmd} ${args.join(" ")}`,
-      message: e instanceof Error ? e.message : String(e)
-    })
+    catch: (e) =>
+      new CommandError({
+        command: `${cmd} ${args.join(" ")}`,
+        message: e instanceof Error ? e.message : String(e)
+      })
   }).pipe(Effect.asVoid);
 }
 

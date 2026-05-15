@@ -4,10 +4,9 @@ import { InvalidNameError } from "./errors.js";
 const npmNameRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 
 export function validateProjectName(raw: string): Effect.Effect<string, InvalidNameError> {
-  const normalized = (raw === "."
-    ? (process.cwd().split("/").pop() || process.cwd())
-    : raw
-  ).toLowerCase().replace(/\s+/g, "-");
+  const normalized = (raw === "." ? process.cwd().split("/").pop() || process.cwd() : raw)
+    .toLowerCase()
+    .replace(/\s+/g, "-");
 
   if (!npmNameRegex.test(normalized)) {
     return Effect.fail(
