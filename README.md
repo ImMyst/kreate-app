@@ -79,9 +79,9 @@ bun typecheck        # tsc
 
 ## Roadmap
 
-- [ ] CLI de base (Effect CLI, commande `new`)
-- [ ] Templates de fichiers (package.json, tsconfig, oxlint, oxfmt, turbo, vitest, git)
+- [x] CLI de base (Effect CLI, commande `new`)
+- [x] Templates de fichiers (package.json, tsconfig, oxlint, oxfmt, turbo, vitest, git)
 - [ ] Template frontend web (Tanstack Start + Tailwind)
 - [ ] Template frontend mobile (Expo + Tamagui)
-- [ ] Pipeline complet (scaffold → git init → subtree → install → commit)
+- [x] Pipeline complet (scaffold → git init → subtree → install → commit)
 - [ ] Tests end-to-end du rendu
