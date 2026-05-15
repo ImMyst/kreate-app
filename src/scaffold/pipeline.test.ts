@@ -1,5 +1,7 @@
 import { describe, expect, layer } from "@effect/vitest";
 import { Effect, FileSystem, Layer, Path, PlatformError } from "effect";
+import { ProcessRunnerTag, make as makeProcessRunner } from "./process-runner.js";
+import { validateDirectory } from "./pipeline.js";
 
 const TestFsLayer = FileSystem.layerNoop({
   exists: (path) => Effect.succeed(path === "/existing-empty" || path === "/existing-full"),
@@ -17,19 +19,9 @@ const TestFsLayer = FileSystem.layerNoop({
   }
 });
 
-function validateDirectory(
-  fs: FileSystem.FileSystem,
-  dir: string
-): Effect.Effect<"empty" | "nonexistent" | "notEmpty", Error> {
-  return Effect.gen(function* () {
-    const exists = yield* fs.exists(dir);
-    if (!exists) return "nonexistent" as const;
-
-    const entries = yield* fs.readDirectory(dir);
-    const visible = entries.filter((e) => !e.startsWith("."));
-    return visible.length === 0 ? ("empty" as const) : ("notEmpty" as const);
-  });
-}
+const _TestProcessRunnerLayer = Layer.succeed(ProcessRunnerTag)(
+  makeProcessRunner(() => Effect.void)
+);
 
 describe("validateDirectory", () => {
   layer(Layer.mergeAll(TestFsLayer, Path.layer))((it) => {
@@ -54,6 +46,43 @@ describe("validateDirectory", () => {
         const fs = yield* FileSystem.FileSystem;
         const result = yield* validateDirectory(fs, "/existing-full");
         expect(result).toBe("notEmpty");
+      })
+    );
+  });
+});
+
+describe("scaffold process calls", () => {
+  const ScaffoldFsLayer = FileSystem.layerNoop({
+    exists: () => Effect.succeed(true),
+    readDirectory: () => Effect.succeed([]),
+    makeDirectory: () => Effect.void,
+    writeFileString: () => Effect.void,
+    chmod: () => Effect.void
+  });
+
+  layer(Layer.mergeAll(ScaffoldFsLayer, Path.layer))((it) => {
+    it.effect("runs git init, bun install, git add, git commit", () =>
+      Effect.gen(function* () {
+        const calls: Array<{ cmd: string; args: ReadonlyArray<string>; cwd?: string }> = [];
+        const mockRunner = makeProcessRunner(
+          (cmd: string, args: ReadonlyArray<string>, options?: { cwd?: string }) =>
+            Effect.sync(() => {
+              calls.push({ cmd, args, cwd: options?.cwd });
+            })
+        );
+
+        const { scaffold } = yield* Effect.promise(() => import("./pipeline.js"));
+        yield* scaffold({
+          rawName: "test-app",
+          targetDir: "/tmp/test-app",
+          frontend: "none"
+        }).pipe(Effect.provideService(ProcessRunnerTag, mockRunner));
+
+        const cmds = calls.map((c) => `${c.cmd} ${c.args.join(" ")}`);
+        expect(cmds).toContain("git init");
+        expect(cmds).toContain("bun install");
+        expect(cmds).toContain("git add .");
+        expect(cmds).toContain("git commit -m Initial scaffold");
       })
     );
   });

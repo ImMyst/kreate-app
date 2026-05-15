@@ -1,6 +1,8 @@
 import { Console, Effect, FileSystem, Path } from "effect";
 import { validateProjectName } from "./validation.js";
 import { writeRootConfig, writeDomainPackage, type FrontendChoice } from "./config.js";
+import { DirectoryNotEmptyError, InvalidNameError } from "./errors.js";
+import { run as runProcess, ProcessRunner } from "./process-runner.js";
 
 export { type FrontendChoice };
 
@@ -10,7 +12,7 @@ export interface ScaffoldOptions {
   readonly frontend: FrontendChoice;
 }
 
-function validateDirectory(
+export function validateDirectory(
   fs: FileSystem.FileSystem,
   dir: string
 ): Effect.Effect<"empty" | "nonexistent" | "notEmpty", Error> {
@@ -24,27 +26,17 @@ function validateDirectory(
   });
 }
 
-function runCommand(cmd: string, args: string[], cwd: string): Effect.Effect<void, Error> {
-  return Effect.tryPromise({
-    try: async () => {
-      const proc = Bun.spawn([cmd, ...args], { cwd });
-      await proc.exited;
-      if (proc.exitCode !== 0) {
-        const stderr = await new Response(proc.stderr).text();
-        throw new Error(stderr);
-      }
-    },
-    catch: (e) => new Error(`Command failed: ${cmd} ${args.join(" ")}\n${e}`)
-  }).pipe(Effect.asVoid);
-}
-
 function logCommand(cmd: string, args: string[]): Effect.Effect<void> {
   return Console.log(`  $ ${cmd} ${args.join(" ")}`);
 }
 
 export function scaffold(
   options: ScaffoldOptions
-): Effect.Effect<void, Error, FileSystem.FileSystem | Path.Path> {
+): Effect.Effect<
+  void,
+  InvalidNameError | DirectoryNotEmptyError | Error,
+  FileSystem.FileSystem | Path.Path | ProcessRunner
+> {
   return Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem;
     const path = yield* Path.Path;
@@ -69,11 +61,7 @@ export function scaffold(
     yield* Console.log("Step 1: Validating target directory...");
     const dirStatus = yield* validateDirectory(fs, targetDir);
     if (dirStatus === "notEmpty") {
-      return yield* Effect.fail(
-        new Error(
-          `Target directory "${targetDir}" is not empty. Use a new directory or run in an empty one.`
-        )
-      );
+      return yield* Effect.fail(new DirectoryNotEmptyError({ path: targetDir }));
     }
     if (dirStatus === "nonexistent") {
       yield* fs.makeDirectory(targetDir, { recursive: true });
@@ -101,21 +89,21 @@ export function scaffold(
 
     yield* Console.log("Step 4: Initializing git...");
     yield* logCommand("git", ["init"]);
-    yield* runCommand("git", ["init"], targetDir);
+    yield* runProcess("git", ["init"], { cwd: targetDir });
     yield* Console.log("  OK");
     yield* Console.log("");
 
     yield* Console.log("Step 5: Installing dependencies...");
     yield* logCommand("bun", ["install"]);
-    yield* runCommand("bun", ["install"], targetDir);
+    yield* runProcess("bun", ["install"], { cwd: targetDir });
     yield* Console.log("  OK");
     yield* Console.log("");
 
     yield* Console.log("Step 6: Creating initial commit...");
     yield* logCommand("git", ["add", "."]);
-    yield* runCommand("git", ["add", "."], targetDir);
+    yield* runProcess("git", ["add", "."], { cwd: targetDir });
     yield* logCommand("git", ["commit", "-m", "Initial scaffold"]);
-    yield* runCommand("git", ["commit", "-m", "Initial scaffold"], targetDir);
+    yield* runProcess("git", ["commit", "-m", "Initial scaffold"], { cwd: targetDir });
     yield* Console.log("  OK");
     yield* Console.log("");
 
