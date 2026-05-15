@@ -232,9 +232,8 @@ jobs:
       - run: bun run test
 `;
 
-const tplPreCommitHook = `#!/bin/sh
-bun lint && bun format:check
-`;
+const tplPreCommitHook = `bun run format && bun run lint && bun run typecheck && bun run test
+git update-index --again`;
 
 const tplDomainPackageJson = `{
   "name": "{{scopeName}}/domain",
