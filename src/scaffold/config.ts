@@ -31,7 +31,7 @@ const tplPackageJson = `{
     "@effect/language-service": "^0.86.1",
     "@effect/vitest": "4.0.0-beta.66",
     "@types/bun": "latest",
-    "oxfmt": "^0.49.0",
+    "oxfmt": "latest",
     "oxlint": "latest",
     "turbo": "latest",
     "typescript": "^6.0.3",
