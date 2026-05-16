@@ -7,12 +7,38 @@
 
 ## Vendored Repositories
 
-This project will vendor external repositories under .repos/ once scaffolding is implemented.
+This project vendors external repositories under .repos/
+
+The Effect v4 repository is cloned to `./repos/effect` for reference.
+Use this to explore APIs, find usage examples, and understand implementation
+details when the documentation isn't enough.
+
+There is also the repos for :
+
+- t3code at `./repos/t3code`
+- opencode at `./repos/opencode`
 
 - Use vendored repositories as read-only reference material when working with related libraries
 - Prefer examples and patterns from the vendored source code over generated guesses or web search results
 - Do not edit files under .repos/ unless explicitly asked
 - Do not import from .repos/ - application code should continue importing from normal package dependencies
+
+## Effect Solutions
+
+<!-- effect-solutions:start -->
+
+### Effect Best Practices
+
+**IMPORTANT:** Always consult effect-solutions before writing Effect code.
+
+1. Run `effect-solutions list` to see available guides
+2. Run `effect-solutions show <topic>...` for relevant patterns (supports multiple topics)
+
+Topics: quick-start, project-setup, tsconfig, basics, services-and-layers, data-modeling, error-handling, config, testing, cli.
+
+Never guess at Effect patterns - check the guide first.
+
+<!-- effect-solutions:end -->
 
 ## Agent skills
 
