@@ -1,4 +1,4 @@
-# kreate-app
+# 🔨 kreate-app
 
 Scaffolding CLI pour projets TypeScript modernes, prêts à développer.
 
