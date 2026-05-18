@@ -20,8 +20,8 @@ const tplPackageJson = `{
       "apps/*"{{/hasApps}}
     ],
     "catalog": {
-      "effect": "^4.0.0-beta.66",
-      "@effect/vitest": "4.0.0-beta.66",
+      "effect": "^4.0.0-beta.67",
+      "@effect/vitest": "^4.0.0-beta.67",
       "@effect/tsgo": "latest",
       "@typescript/native-preview": "latest"
     }
