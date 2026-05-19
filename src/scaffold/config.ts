@@ -20,9 +20,9 @@ const tplPackageJson = `{
       "apps/*"{{/hasApps}}
     ],
     "catalog": {
-      "effect": "^4.0.0-beta.67",
-      "@effect/vitest": "^4.0.0-beta.67",
-      "@effect/tsgo": "latest",
+      "effect": "^4.0.0-beta.68",
+      "@effect/vitest": "^4.0.0-beta.68",
+      "@effect/tsgo": "^4.0.0-beta.68",
       "@typescript/native-preview": "latest"
     }
   },
@@ -45,7 +45,6 @@ const tplPackageJson = `{
     "oxfmt": "latest",
     "oxlint": "latest",
     "turbo": "latest",
-    "typescript": "^6.0.3",
     "vitest": "latest"
   },
   "packageManager": "bun@1.3.14"
