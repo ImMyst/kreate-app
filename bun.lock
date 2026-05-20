@@ -20,16 +20,16 @@
     },
   },
   "catalog": {
-    "@effect/platform-bun": "^4.0.0-beta.68",
-    "@effect/tsgo": "latest",
-    "@effect/vitest": "^4.0.0-beta.68",
+    "@effect/platform-bun": "^4.0.0-beta.69",
+    "@effect/tsgo": "^0.7.4",
+    "@effect/vitest": "^4.0.0-beta.69",
     "@typescript/native-preview": "latest",
-    "effect": "^4.0.0-beta.68",
+    "effect": "^4.0.0-beta.69",
   },
   "packages": {
-    "@effect/platform-bun": ["@effect/platform-bun@4.0.0-beta.68", "", { "dependencies": { "@effect/platform-node-shared": "^4.0.0-beta.68" }, "peerDependencies": { "effect": "^4.0.0-beta.68" } }, "sha512-Jhk+OqaV2N8KjmT3BxeYq5K914ZHYuId1yaIAoqvcU6YwgPD3grfhv9vfKyJJ3GP0vFFeOIL6T5NWQy0Qf+3AA=="],
+    "@effect/platform-bun": ["@effect/platform-bun@4.0.0-beta.69", "", { "dependencies": { "@effect/platform-node-shared": "^4.0.0-beta.69" }, "peerDependencies": { "effect": "^4.0.0-beta.69" } }, "sha512-nMGGoJ8ATY6oqQK77rtuuQ1UbP/APbxgKuJfaOtBwsSAVMLlNb7sK3HMKxhmHraWCs7lPtVMCl8TpkEoxJRk5Q=="],
 
-    "@effect/platform-node-shared": ["@effect/platform-node-shared@4.0.0-beta.68", "", { "dependencies": { "@types/ws": "^8.18.1", "ws": "^8.20.0" }, "peerDependencies": { "effect": "^4.0.0-beta.68" } }, "sha512-a6q/Rid2CQQBSoTIhBnT2oCozeaEvx5DXreSdT4jbvxPSC0j2l0EqcYdHgvEGDqvhocIAezgmSQbcHNcnyDg8w=="],
+    "@effect/platform-node-shared": ["@effect/platform-node-shared@4.0.0-beta.69", "", { "dependencies": { "@types/ws": "^8.18.1", "ws": "^8.20.0" }, "peerDependencies": { "effect": "^4.0.0-beta.69" } }, "sha512-0IXcDFvKroXrdRpL/KX6uI9OfbipOMtFnTywGIW+5RfcVVVm1MZs4/tDCUqMVndhw4lq5HOajk5m7/OCxBAQNg=="],
 
     "@effect/tsgo": ["@effect/tsgo@0.7.4", "", { "optionalDependencies": { "@effect/tsgo-darwin-arm64": "0.7.4", "@effect/tsgo-darwin-x64": "0.7.4", "@effect/tsgo-linux-arm": "0.7.4", "@effect/tsgo-linux-arm64": "0.7.4", "@effect/tsgo-linux-x64": "0.7.4", "@effect/tsgo-win32-arm64": "0.7.4", "@effect/tsgo-win32-x64": "0.7.4" }, "bin": { "effect-tsgo": "dist/effect-tsgo.js" } }, "sha512-TBNy7iPEwJ7SD8z7cLdGAK9940TTyLFOaaeHZhs61yLhCrTACUjWfVa1jEcnrhGVQvZs/aSGW7Q8+HE0vy1qzw=="],
 
@@ -47,7 +47,7 @@
 
     "@effect/tsgo-win32-x64": ["@effect/tsgo-win32-x64@0.7.4", "", { "os": "win32", "cpu": "x64" }, "sha512-kGTGtpxBXm/Wrf5SdCCoroBUqFX69wFHPjCiJdZpJsK3y2FjLzp1I/zcOCIJEvjV1c7fOEJQ1znsH2loYpDOVA=="],
 
-    "@effect/vitest": ["@effect/vitest@4.0.0-beta.68", "", { "peerDependencies": { "effect": "^4.0.0-beta.68", "vitest": "^3.0.0 || ^4.0.0" } }, "sha512-7B3OZ7e6dnWTbvuQvF/YpIf5YPN6F4KCF5ITevy3Ge5UulaEpjNGoON9sW1eYn0KtOyyji2XQWDAxGT5vAVOXw=="],
+    "@effect/vitest": ["@effect/vitest@4.0.0-beta.69", "", { "peerDependencies": { "effect": "^4.0.0-beta.69", "vitest": "^3.0.0 || ^4.0.0" } }, "sha512-tlsyoKJfNbyiSMwTkHMBGCGy0eq1dWucrX0eNmTkqlDZt+nU5xnMt18U+1KhCKq1cgzIE/CrBNlCyoOYILTlmA=="],
 
     "@emnapi/core": ["@emnapi/core@1.10.0", "", { "dependencies": { "@emnapi/wasi-threads": "1.2.1", "tslib": "^2.4.0" } }, "sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw=="],
 
@@ -237,7 +237,7 @@
 
     "detect-libc": ["detect-libc@2.1.2", "", {}, "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="],
 
-    "effect": ["effect@4.0.0-beta.68", "", { "dependencies": { "@standard-schema/spec": "^1.1.0", "fast-check": "^4.8.0", "find-my-way-ts": "^0.1.6", "ini": "^7.0.0", "kubernetes-types": "^1.30.0", "msgpackr": "^2.0.1", "multipasta": "^0.2.7", "toml": "^4.1.1", "uuid": "^14.0.0", "yaml": "^2.9.0" } }, "sha512-JVmKXJvpyKBzr4xEr9nRlA6wQoInsI2WCfu2F69On49hvyDAmAOMb5ACa51HJksvRdqbSg7Zf0d++NQebY9cFQ=="],
+    "effect": ["effect@4.0.0-beta.69", "", { "dependencies": { "@standard-schema/spec": "^1.1.0", "fast-check": "^4.8.0", "find-my-way-ts": "^0.1.6", "ini": "^7.0.0", "kubernetes-types": "^1.30.0", "msgpackr": "^2.0.1", "multipasta": "^0.2.7", "toml": "^4.1.1", "uuid": "^14.0.0", "yaml": "^2.9.0" } }, "sha512-o6og4Dkh0/esTnCJq7UwQ5PZhuQQYCxNCrEYPVk5Z2Fo7oPTHj0/AAVi5kF2Dln53+jEVxA7quXMC/+jPnATuw=="],
 
     "es-module-lexer": ["es-module-lexer@2.1.0", "", {}, "sha512-n27zTYMjYu1aj4MjCWzSP7G9r75utsaoc8m61weK+W8JMBGGQybd43GstCXZ3WNmSFtGT9wi59qQTW6mhTR5LQ=="],
 
