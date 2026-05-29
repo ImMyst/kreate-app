@@ -43,7 +43,7 @@ describe("processPackageJson", () => {
     const parsed = JSON.parse(result);
     expect(parsed.workspaces.packages).toEqual(["packages/*"]);
     expect(parsed.workspaces.catalog).toBeDefined();
-    expect(parsed.workspaces.catalog.effect).toBe("^4.0.0-beta.70");
+    expect(parsed.workspaces.catalog.effect).toBe("^4.0.0-beta.74");
   });
 
   it("includes apps/* workspace for web", () => {
